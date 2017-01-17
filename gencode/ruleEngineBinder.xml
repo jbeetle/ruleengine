@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binder>
+   		<item interface="com.beetle.component.ruleengine.persistence.dao.ConclusionDao" implement="com.beetle.component.ruleengine.persistence.imp.ConclusionImpl" />
+		<item interface="com.beetle.component.ruleengine.persistence.dao.FactorDao" implement="com.beetle.component.ruleengine.persistence.imp.FactorImpl" />
+		<item interface="com.beetle.component.ruleengine.persistence.dao.RuleDao" implement="com.beetle.component.ruleengine.persistence.imp.RuleImpl" />
+		<item interface="com.beetle.component.ruleengine.persistence.dao.RuleGroupDao" implement="com.beetle.component.ruleengine.persistence.imp.RuleGroupImpl" />
+</binder>
