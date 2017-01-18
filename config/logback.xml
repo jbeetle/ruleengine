@@ -122,7 +122,7 @@
          <appender-ref ref="SUM-OUT" />
     -->
   </root>
-  <logger name="com.beetle.framework" level="debug" />
+  <logger name="com.beetle.framework" level="info" />
   <logger name="com.beetle.component" level="debug" />
   <logger name="test" level="debug" />
   <logger name="credit" level="debug" />

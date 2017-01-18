@@ -24,6 +24,7 @@ import com.beetle.framework.log.AppLogger;
 import com.beetle.framework.persistence.access.operator.DBOperatorException;
 import com.beetle.framework.resource.dic.def.InjectField;
 import com.beetle.framework.resource.dic.def.ServiceTransaction;
+import com.beetle.framework.util.cache.ICache;
 
 public class DecisionTableServiceImpl implements DecisionTableService {
 	private static Logger logger = AppLogger.getLogger(DecisionTableServiceImpl.class);
@@ -73,6 +74,14 @@ public class DecisionTableServiceImpl implements DecisionTableService {
 	@Override
 	public RuleGroup queryRuleGroup(long ruleGroupId) throws RuleEngineServiceException {
 		RuleGroup rg = null;
+		if (CacheHelper.isCacheFlag()) {
+			ICache cache = CacheHelper.getGROUPCACHE();
+			rg = (RuleGroup) cache.get(ruleGroupId);
+			if (rg != null) {
+				logger.debug("from cache:{}", ruleGroupId);
+				return rg;
+			}
+		}
 		try {
 			rg = ruleGroupDao.get(ruleGroupId);
 			if (rg == null) {
@@ -105,10 +114,15 @@ public class DecisionTableServiceImpl implements DecisionTableService {
 					rg.addRule(rule);
 				}
 			}
+			if (CacheHelper.isCacheFlag()) {
+				ICache cache = CacheHelper.getGROUPCACHE();
+				cache.put(ruleGroupId, rg);
+				logger.debug("put into cache:{}", ruleGroupId);
+			}
+			return rg;
 		} catch (DBOperatorException dbe) {
 			throw new RuleEngineServiceException(-110, dbe);
 		}
-		return rg;
 	}
 
 	@Override
@@ -136,9 +150,6 @@ public class DecisionTableServiceImpl implements DecisionTableService {
 			DecisionTableLastRule dtlr = new DecisionTableLastRule(rule.getName(), rule.getRuleId(),
 					rule.getConclusionList(), response);
 			cpsr.addRule(dtlr);
-			//
-			// logger.debug("CompositeRule:{},{}",rule.getName(),cpsr.evaluate());
-			//
 			engine.registerRule(cpsr);
 			logger.debug("engine register:{},{}", rule.getRuleId(), rule.getName());
 		}
@@ -146,6 +157,63 @@ public class DecisionTableServiceImpl implements DecisionTableService {
 		logger.debug("ruleegine fired!");
 		logger.debug("end,result:{},{}", response.isMatch(), response);
 		return response;
+	}
+
+	@ServiceTransaction
+	@Override
+	public void deleteRuleGroup(long ruleGroupId) throws RuleEngineServiceException {
+		RuleGroup rg = this.queryRuleGroup(ruleGroupId);
+		if (rg == null)
+			return;
+		try {
+			ruleGroupDao.delete(rg.getGid());
+			List<Rule> rules = rg.getRuleList();
+			for (Rule rule : rules) {
+				ruleDao.delete(rule.getRuleId());
+				List<Factor> factors = rule.getFactorList();
+				for (Factor factor : factors) {
+					factorDao.delete(factor.getFid());
+				}
+				List<Conclusion> conclusions = rule.getConclusionList();
+				for (Conclusion c : conclusions) {
+					conclusionDao.delete(c.getCId());
+				}
+			}
+		} catch (DBOperatorException dbe) {
+			throw new RuleEngineServiceException(-110, dbe);
+		}
+	}
+
+	@ServiceTransaction
+	@Override
+	public void createRuleToRuleGroup(Rule rule) throws RuleEngineServiceException {
+		try {
+			long ruleid=ruleDao.insert(rule);
+			List<Factor> factors = rule.getFactorList();
+			for (Factor factor : factors) {
+				factor.setRuleId(ruleid);
+				factorDao.insert(factor);
+			}
+			List<Conclusion> conclusions = rule.getConclusionList();
+			for (Conclusion c : conclusions) {
+				c.setRuleId(ruleid);
+				conclusionDao.insert(c);
+			}
+		} catch (DBOperatorException dbe) {
+			throw new RuleEngineServiceException(-110, dbe);
+		}
+	}
+
+	@ServiceTransaction
+	@Override
+	public void deleteRuleFromRuleGroup(long ruleId) throws RuleEngineServiceException {
+		try {
+			ruleDao.delete(ruleId);
+			factorDao.deleteByRuleId(ruleId);
+			conclusionDao.deleteByRuleId(ruleId);
+		} catch (DBOperatorException dbe) {
+			throw new RuleEngineServiceException(-110, dbe);
+		}
 	}
 
 }

@@ -2,6 +2,7 @@ package com.beetle.component.ruleengine.service;
 
 import com.beetle.component.ruleengine.dto.Request;
 import com.beetle.component.ruleengine.dto.Response;
+import com.beetle.component.ruleengine.dto.Rule;
 import com.beetle.component.ruleengine.dto.RuleGroup;
 
 /**
@@ -19,6 +20,12 @@ public interface DecisionTableService {
 	 */
 	void createRuleGroup(RuleGroup ruleGroup) throws RuleEngineServiceException;
 
+	void deleteRuleGroup(long ruleGroupId) throws RuleEngineServiceException;
+
+	void createRuleToRuleGroup(Rule rule) throws RuleEngineServiceException;
+
+	void deleteRuleFromRuleGroup(long ruleId) throws RuleEngineServiceException;
+
 	/**
 	 * 根据ruleGroupId获取到整个规则组的信息
 	 * 
@@ -30,6 +37,7 @@ public interface DecisionTableService {
 
 	/**
 	 * 执行，运算决策表，并返回匹配的结果
+	 * 
 	 * @param request
 	 * @return
 	 * @throws RuleEngineServiceException

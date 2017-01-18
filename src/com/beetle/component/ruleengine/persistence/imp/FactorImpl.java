@@ -36,4 +36,9 @@ public class FactorImpl implements FactorDao {
 		return operator.deleteByPrimaryKey(id);
 	}
 
+	@Override
+	public void deleteByRuleId(long ruleid) throws DBOperatorException {
+		operator.deleteByWhereCondition("where ruleId=? ", new Object[] { ruleid });
+	}
+
 }

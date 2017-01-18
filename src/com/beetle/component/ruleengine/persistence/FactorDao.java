@@ -16,4 +16,5 @@ public interface FactorDao {
 
 	int delete(Long fid) throws DBOperatorException;
 
+	void deleteByRuleId(long ruleid) throws DBOperatorException;
 }

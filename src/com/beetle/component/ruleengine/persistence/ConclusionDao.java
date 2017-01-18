@@ -16,4 +16,5 @@ public interface ConclusionDao {
 
 	int delete(Long cid) throws DBOperatorException;
 
+	void deleteByRuleId(long ruleid) throws DBOperatorException;
 }
