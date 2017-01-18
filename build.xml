@@ -7,6 +7,7 @@
 	<property name="build.bin.dir" value="${project.root}/bin/tmp" />
 	<property name="build.main.src.dir" value="${project.root}/src" />
 	<property name="docs.dir" value="${project.root}/docs" />
+	<property name="dist.dir" value="${project.root}/dist" />
 	<path id="master-classpath">
 		<fileset dir="${build.lib.dir}" />
 	</path>
@@ -15,9 +16,8 @@
 		<mkdir dir="${build.bin.dir}" />
 	</target>
 	<target depends="cleanup" name="srccompile">
-		<javac destdir="${build.bin.dir}" target="1.6" source="1.6" debug="true" deprecation="true" encoding="UTF-8">
+		<javac destdir="${build.bin.dir}" target="1.7" source="1.7" debug="true" deprecation="true" encoding="UTF-8">
 			<src path="${build.main.src.dir}" />
-			<src path="${build.tool.src.dir}" />
 			<classpath refid="master-classpath" />
 		</javac>
 	</target>
@@ -29,9 +29,8 @@
             </fileset>
         </copy>
     </target>
-	<target depends="srccompile,resource" name="archive">
-		<delete dir="${build.bin.dir}/weblogic" />
-        <jar compress="true" destfile="${dist.dir}/beetle.jar" manifest="${build.main.src.dir}/META-INF/MANIFEST.MF">
+	<target depends="srccompile,resource" name="genJar">
+		 <jar compress="true" destfile="${dist.dir}/beetle-ruleengine.jar" manifest="${build.main.src.dir}/META-INF/MANIFEST.MF">
             <fileset dir="${build.bin.dir}">
                 <include name="**/*.*"/>
             </fileset>
@@ -73,33 +72,7 @@
     </target>
 	
 	
-	<!--gen webconsole-->
-	<target name="genWebWar" depends="archive" >
-		<mkdir dir="${basedir}/output/WebConsole" />
-		<mkdir dir="${basedir}/output/WebConsole/web" />
-		<mkdir dir="${basedir}/output/WebConsole/classes" />
-		<delete file="${basedir}/output/WebConsole.war" />
-		<javac destdir="${basedir}/output/WebConsole/classes" target="1.6" source="1.6" debug="true" deprecation="true" encoding="utf-8">
-			<src path="${samples.dir}/WebConsole/src" />
-			<classpath>
-                <path refid="master-classpath"/>
-                <path location="${dist.dir}/beetle.jar"/>
-			</classpath>
-		</javac>
-		<copy todir="${basedir}/output/WebConsole/web">
-			<fileset dir="${samples.dir}/WebConsole/WebContent" />
-		</copy>
-		<copy todir="${basedir}/output/WebConsole/web/WEB-INF/classes">
-			<fileset dir="${basedir}/output/WebConsole/classes" />
-		</copy>
-		<copy file="${dist.dir}/beetle.jar" todir="${basedir}/output/WebConsole/web/WEB-INF/lib" />
-		<copydir src="${build.lib.dir}/web" dest="${basedir}/output/WebConsole/web/WEB-INF/lib" includes="**/*.jar" flatten="true"/>
-		<copydir src="${build.lib.dir}/util" dest="${basedir}/output/WebConsole/web/WEB-INF/lib" includes="**/*.jar" flatten="true"/>
-		<!--<copydir src="${build.lib.dir}/persistence" dest="${basedir}/output/dwz/web/WEB-INF/lib" includes="**/h2*.jar" flatten="true"/>-->
-		<copydir src="${build.lib.dir}/persistence" dest="${basedir}/output/WebConsole/web/WEB-INF/lib" includes="**/*.jar" flatten="true"/>
-		<zip destfile="${basedir}/output/WebConsole.war" basedir="${basedir}/output/WebConsole/web" />
-		<delete dir="${basedir}/output/WebConsole" />
-    </target>
+	
 	
  </project>
 

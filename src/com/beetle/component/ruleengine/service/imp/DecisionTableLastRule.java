@@ -18,7 +18,7 @@ public class DecisionTableLastRule extends BasicRule {
 	private Response response;
 
 	public DecisionTableLastRule(String ruleName, Long ruleId, List<Conclusion> conclusions, Response response) {
-		super();
+		super(ruleName + "-lastone");
 		this.ruleName = ruleName;
 		this.ruleId = ruleId;
 		this.conclusions = conclusions;
