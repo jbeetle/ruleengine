@@ -9,6 +9,7 @@ public class RuleGroup implements java.io.Serializable {
 	private java.sql.Timestamp createtime;
 	private String descp;
 	private Integer status;
+	private Integer catalog;
 	private String name;
 	private Long gid;
 	private List<Rule> ruleList = new ArrayList<>();
@@ -64,10 +65,20 @@ public class RuleGroup implements java.io.Serializable {
 		this.ruleList.add(rule);
 	}
 
+	public Integer getCatalog() {
+		return catalog;
+	}
+
+	public void setCatalog(Integer catalog) {
+		this.catalog = catalog;
+	}
+
 	@Override
 	public String toString() {
-		return "RuleGroup [createtime=" + createtime + ", descp=" + descp + ", status=" + status + ", name=" + name
-				+ ", gid=" + gid + ", ruleList=" + ruleList + "]";
+		return "RuleGroup [createtime=" + createtime + ", descp=" + descp + ", status=" + status + ", catalog="
+				+ catalog + ", name=" + name + ", gid=" + gid + ", ruleList=" + ruleList + "]";
 	}
+
+	
 
 }
