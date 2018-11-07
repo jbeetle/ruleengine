@@ -22,19 +22,19 @@ import com.beetle.component.ruleengine.service.RuleEngineServiceException;
 import com.beetle.framework.AppProperties;
 import com.beetle.framework.log.AppLogger;
 import com.beetle.framework.persistence.access.operator.DBOperatorException;
-import com.beetle.framework.resource.dic.def.InjectField;
+import com.beetle.framework.resource.dic.def.DaoField;
 import com.beetle.framework.resource.dic.def.ServiceTransaction;
 import com.beetle.framework.util.cache.ICache;
 
 public class DecisionTableServiceImpl implements DecisionTableService {
 	private static Logger logger = AppLogger.getLogger(DecisionTableServiceImpl.class);
-	@InjectField
+	@DaoField
 	private RuleGroupDao ruleGroupDao;
-	@InjectField
+	@DaoField
 	private RuleDao ruleDao;
-	@InjectField
+	@DaoField
 	private FactorDao factorDao;
-	@InjectField
+	@DaoField
 	private ConclusionDao conclusionDao;
 
 	@ServiceTransaction
@@ -188,7 +188,7 @@ public class DecisionTableServiceImpl implements DecisionTableService {
 	@Override
 	public void createRuleToRuleGroup(Rule rule) throws RuleEngineServiceException {
 		try {
-			long ruleid=ruleDao.insert(rule);
+			long ruleid = ruleDao.insert(rule);
 			List<Factor> factors = rule.getFactorList();
 			for (Factor factor : factors) {
 				factor.setRuleId(ruleid);

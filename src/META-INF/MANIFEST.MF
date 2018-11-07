@@ -4,6 +4,6 @@ Created-By: 1.7 (Oracle Inc.)
 
 Name: com/beetle/component/
 Implementation-Title: beetle-ruleengine.jar
-Implementation-Version: 1.0.1 build_521
+Implementation-Version: 1.0.2 build_214
 Implementation-Vendor: "BeetleSoftware, Henry Yu, yuhaodong@gmail.com"
 
